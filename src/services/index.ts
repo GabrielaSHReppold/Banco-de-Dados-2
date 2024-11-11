@@ -1,2 +1,2 @@
-export * from "./auth.service";
-export * from "./student.service";
+export * from "./auth.services";
+export * from "./usuario.services";

@@ -14,10 +14,68 @@ model Usuario {
  email      String     @unique @db.VarChar(250)
  username   String     @unique @db.VarChar(60)
  senha      String?    //BigInt?
+ authToken  String?    @db.VarChar(255)
+
+ followers Follower[] @relation("FollowerRelation_follower")
+ following Follower[] @relation("FollowerRelation_followed")
+
+ Tweet Tweet[]
+ Like Like[]
 
  createdAt  DateTime   @default(now()) @map("created_at") @db.Timestamp(6)
  updatedAt  DateTime   @updatedAt @map("updated_at")
 
  @@map("usuarios")
 }
+
+model Follower {
+ id         String    @id @default(uuid()) @db.Uuid
+ followerId String    @db.Uuid
+ followedId String    @db.Uuid
+
+ follower   Usuario   @relation("FollowerRelation_follower", fields: [followerId], references: [id])
+ followed   Usuario   @relation("FollowerRelation_followed", fields: [followedId], references: [id])
+
+ createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
+ updatedAt  DateTime  @updatedAt @map("updated_at")
+
+ @@unique([followerId, followedId])
+}
+
+model Tweet {
+ id        String    @id @default(uuid()) @db.Uuid
+ conteudo  String
+ tipo      TweetTipo @default(Tweet)
+
+ usuarioId String    @map("usuario_id") @db.Uuid
+
+ createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
+ updatedAt DateTime  @updatedAt @map("updated_at")
+
+ usuario   Usuario   @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+ Like      Like[]    @relation("TweetLikes")
+
+ @@map("tweets")
+}
+
+enum TweetTipo {
+ Tweet
+ Reply
+}
+
+model Like {
+ id        String   @id @default(uuid()) @db.Uuid
+ usuarioId String   @map("usuario_id") @db.Uuid
+ tweetId   String   @map("tweet_id") @db.Uuid
+
+ createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+ updatedAt DateTime @updatedAt @map("updated_at")
+
+ tweet     Tweet    @relation("TweetLikes", fields: [tweetId], references: [id], onDelete: Cascade)
+ usuario   Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+ @@map("likes")
+}
+
+
 

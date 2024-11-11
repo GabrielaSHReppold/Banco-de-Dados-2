@@ -29,9 +29,9 @@ export class AuthMiddleware {
     }
 
     // Repassa essa informação.
-    req.body.student = {
+    req.body.usuario = {
       id: usuarioFound.id,
-      type: usuarioFound.type,
+      type: usuarioFound.tipo,
     };
 
     req.body.outro = "DEU BOM";

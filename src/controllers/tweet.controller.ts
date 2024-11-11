@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { TweetDto } from "../dtos/tweet.dto";
+import { CreateTweetDto, TweetDto } from "../dtos/tweet.dto";
 import { TweetService } from "../services/tweet.services";
 import { UpdateTweetDto } from "../dtos/tweet.dto";
 
@@ -12,11 +12,11 @@ export class TweetController {
       const data: CreateTweetDto = {
         conteudo,
         tipo,
-        usuarioId,
+        usuarioId: ""
       };
 
       const service = new TweetService();
-      const result = await service.create(data);
+      const result = await service.createTweet(data, usuarioId);
 
       const { code, ...response } = result;
       res.status(code).json(response);
@@ -32,13 +32,13 @@ export class TweetController {
   public static async findAll(req: Request, res: Response): Promise<void> {
     try {
       const { page, take } = req.query;
-
+  
       const service = new TweetService();
       const result = await service.findAll({
         page: page ? Number(page) - 1 : undefined,
         take: take ? Number(take) : undefined,
       });
-
+  
       const { code, ...response } = result;
       res.status(code).json(response);
     } catch (error: any) {

@@ -1,15 +1,14 @@
 import { Response, Request } from "express";
 import { AuthService } from "../services/auth.services";
-
 export class AuthController {
   public static async login(req: Request, res: Response): Promise<void> {
     try {
       // 1 - Pegar os dados
-      const { email, password } = req.body;
+      const { email, senha } = req.body;
 
       // 2 - Chamara o responsável
       const service = new AuthService();
-      const result = await service.login({ email, password });
+      const result = await service.login({ email, senha });
 
       // 3 - Response para cliente
       const { code, ...response } = result;

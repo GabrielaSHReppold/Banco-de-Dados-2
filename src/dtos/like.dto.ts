@@ -1,4 +1,4 @@
-import { like } from "@prisma/client";
+import { Like } from "@prisma/client";
 
 // Criação do DTO de Criação
 export interface CreateLikeDto {

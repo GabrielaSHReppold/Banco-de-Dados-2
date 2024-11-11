@@ -1,3 +1,4 @@
+import { TweetTipo } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 
 export class UpdateLikeMiddleware {
@@ -7,9 +8,13 @@ export class UpdateLikeMiddleware {
     res: Response, 
     next: NextFunction
     ): void {
-    const { usuarioId, tweetId } = req.body;
+    const { usuarioId, tweetId, TweetTipo } = req.body;
 
-    if (TweetTipo && TweetTipo !== 'Tweet' && TweetTipo !== 'Reply') {
+    if (
+      TweetTipo &&
+      TweetTipo !==  TweetTipo.Reply &&
+      TweetTipo !==  TweetTipo.Tweet
+      ) {
         res.status(400).json({
           ok: false,
           message: "O campo tipo deve ser Tweet ou Reply.",

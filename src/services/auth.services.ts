@@ -1,12 +1,12 @@
 import { randomUUID } from "crypto";
 import { prisma } from "../database/prisma.database";
 import { LoginDto } from "../dtos";
-import { ResponseApi } from "../types";
+import { ResponseApi } from "../Types";
 import { Bcrypt } from "../utils/bcrypt";
 
 export class AuthService {
   public async login(data: LoginDto): Promise<ResponseApi> {
-    const { email, senha } = data;
+    const { email, senha: senhaRecebida } = data;
 
     // 1 - Verificar o email
     const usuario = await prisma.usuario.findUnique({
@@ -17,20 +17,30 @@ export class AuthService {
       return {
         ok: false,
         code: 404,
-        message: "E-mail incorretos.",
+        message: "E-mail incorreto.",
       };
     }
 
-    // 2 - Verficar a senha (hash - bcrypt)
+    // 2 - Verificar a senha (hash - bcrypt)
     const hash = usuario.senha;
-    const bcrypt = new Bcrypt();
-    const isValidPassword = await bcrypt.verify(senha, hash);
 
-    if (!senha) {
+    // Verificar se o hash é nulo
+    if (!hash) {
+      return {
+        ok: false,
+        code: 400,
+        message: "Senha não encontrada.",
+      };
+    }
+
+    const bcrypt = new Bcrypt();
+    const isPasswordValid = await bcrypt.verify(senhaRecebida, hash);
+
+    if (!isPasswordValid) {
       return {
         ok: false,
         code: 404,
-        message: "Senha incorretos.",
+        message: "Senha incorreta.",
       };
     }
 
@@ -59,6 +69,19 @@ export class AuthService {
       where: { authToken: token },
     });
 
-    return usuario;
+    if (!usuario) {
+      return {
+        ok: false,
+        code: 404,
+        message: "Token inválido.",
+      };
+    }
+
+    return {
+      ok: true,
+      code: 200,
+      message: "Token válido.",
+      data: usuario,
+    };
   }
 }

@@ -1,22 +1,48 @@
 import { prisma } from "../database/prisma.database";
 import { ResponseApi } from "../Types";
 import { CreateLikeDto } from "../dtos/like.dto";
+import { Like } from "@prisma/client";
 
 export class LikeService {
-  findOneById(id: string) {
-    throw new Error("Method not implemented.");
+  
+
+
+  public async findOneById(id: string): Promise<Like | null> {
+    const like = await prisma.like.findUnique({
+      where: { id },
+    });
+    return like;
   }
-  findAll(arg0: { page: number | undefined; take: number | undefined; }) {
-    throw new Error("Method not implemented.");
+
+  public async findAll(params: { page?: number; take?: number }): Promise<Like[]> {
+    const { page = 0, take = 10 } = params;
+    const likes = await prisma.like.findMany({
+      skip: page * take,
+      take,
+    });
+    return likes;
   }
-  create(data: CreateLikeDto) {
-    throw new Error("Method not implemented.");
+
+  public async create(data: CreateLikeDto): Promise<Like> {
+    const like = await prisma.like.create({
+      data,
+    });
+    return like;
   }
-  update(id: string, arg1: { usuarioId: any; tweetId: any; }) {
-    throw new Error("Method not implemented.");
+
+  public async update(id: string, data: { usuarioId: string; tweetId: string }): Promise<Like> {
+    const like = await prisma.like.update({
+      where: { id },
+      data,
+    });
+    return like;
   }
-  remove(id: string) {
-    throw new Error("Method not implemented.");
+
+  public async remove(id: string): Promise<Like> {
+    const like = await prisma.like.delete({
+      where: { id },
+    });
+    return like;
   }
 
   public async likeTweet(usuarioId: string, tweetId: string): Promise<ResponseApi> {

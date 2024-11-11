@@ -1,4 +1,4 @@
-import { CreateTweetTipo} from "@prisma/client"; 
+import { TweetTipo } from "@prisma/client"; 
 // Criação do DTO de Criação
 export interface CreateTweetDto {
   conteudo: string; 

@@ -2,11 +2,14 @@
 import { Tweet, TweetTipo, Usuario } from "@prisma/client";
 import { prisma } from "../database/prisma.database";
 import { CreateTweetDto } from "../dtos/tweet.dto";
-import { ResponseApi } from "../types";
-import { AuthService } from "../auth/auth.service";
+import { ResponseApi } from "../Types";
+import { AuthService } from "./auth.services";
 
 export class TweetService {
-
+  remove: any;
+  update: any;
+  findOneById: any;
+  findAll: any;
   public async createTweet(createTweetDto: CreateTweetDto, usuarioId: string): Promise<ResponseApi> {
     // Verificar se o usuário está autenticado
     const usuario = await prisma.usuario.findUnique({ where: { id: usuarioId } });
@@ -110,12 +113,9 @@ export class TweetService {
 
   private mapTweetToDto(tweet: Tweet): CreateTweetDto {
     return {
-      id: tweet.id, 
       conteudo: tweet.conteudo,
       tipo: tweet.tipo,
       usuarioId: tweet.usuarioId,
-      createdAt: tweet.createdAt,
-      updatedAt: tweet.updatedAt,
     };
   }
 }

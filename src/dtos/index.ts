@@ -1,2 +1,2 @@
-export * from "./student.dto";
+export * from "./usuario.dto";
 export * from "./auth.dto";

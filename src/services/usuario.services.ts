@@ -5,7 +5,7 @@ import { Usuario } from "@prisma/client";
 
 export class UsuarioService {
 
- public async create(createUsuarioDto: CreateUsuarioDto): Promise<ResponseApi> {
+ public async create(createUsuarioDto: CreateUsuarioDto):Promise<ResponseApi> {
    const { nome, email, username, senha } = createUsuarioDto;
 
    // Verificar se o e-mail ou username já existem
@@ -142,16 +142,6 @@ export class UsuarioService {
    };
  }
 
- private mapToDto(usuario: Usuario): CreateUsuarioDto {
-   return {
-     id: usuario.id,
-     nome: usuario.nome,
-     email: usuario.email,
-     username: usuario.username,
-     senha: usuario.senha,
-   };
- }
-
  public async update(id: string, updateUsuarioDto: UpdateUsuarioDto): Promise<ResponseApi> {
    const { nome, email, username, senha } = updateUsuarioDto;
     // Verificar se o usuário existe
@@ -175,6 +165,9 @@ export class UsuarioService {
      data: this.mapToDto(usuarioAtualizado),
    };
  }
+  mapToDto(usuarioAtualizado: { id: string; createdAt: Date; updatedAt: Date; nome: string; email: string; username: string; senha: string | null; }): any {
+    throw new Error("Method not implemented.");
+  }
 
  public async remove(id: string): Promise<ResponseApi> {
    // Verificar se o usuário existe
@@ -194,23 +187,19 @@ export class UsuarioService {
      message: "Usuário removido com sucesso!",
    };
  } 
+}
 
- // Mapeamento do DTO
- private mapToDto(usuario: Usuario){
+function mapToDto(usuario: Usuario): CreateUsuarioDto {
   return {
     nome: usuario.nome,
     email: usuario.email,
     username: usuario.username,
-    senha: usuario.senha ?? "",
-    };
-  }
+    senha: usuario.senha ?? "", 
+  };
 }
-interface UpdateDTO {
-  nome: usuario.nome,
-  email: usuario.email,
-  username: usuario.username,
-  senha: usuario.senha ?? "",
-}
+
+
+
 
 
 
